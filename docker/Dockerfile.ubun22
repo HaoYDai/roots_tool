@@ -1,0 +1,38 @@
+FROM ubuntu:22.04
+MAINTAINER Darren "Darren_Serious@hotmail.com"
+
+# config env
+ENV TZ=Asia/Shanghai
+ENV DEBIAN_FRONTEND=noninteractive
+
+# change aptly repo source to huaweicloud
+RUN cp -a /etc/apt/sources.list /etc/apt/sources.list.bak
+RUN sed -i 's@http://.*ubuntu.com@http://repo.huaweicloud.com@g' /etc/apt/sources.list
+
+RUN apt-get update
+
+# install build essential deb dependency
+RUN apt-get install -y build-essential crossbuild-essential-arm64 \
+    bash-completion vim sudo locales time rsync bc python3 python-is-python3 \
+    python2 libmpc-dev curl git ssh make libssl-dev liblz4-tool \
+    g++ chrpath binfmt-support qemu-user-static cmake unzip rsync \
+    --fix-missing
+
+#for rootfs
+RUN apt-get install -y -f language-selector-common \
+    qemu-user-static binfmt-support
+
+RUN apt-get update && apt-get install -y -f
+
+# fix language support
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+
+# switch to a no-root user
+#RUN useradd -c 'sr user' -m -d /home/sr -s /bin/bash sr
+#RUN sed -i -e '/\%sudo/ c \%sudo ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
+#RUN usermod -a -G sudo sr
+
+# config user and workdir for default usage
+#USER sr
+#WORKDIR /home/sr
