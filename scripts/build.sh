@@ -39,6 +39,12 @@ case $cmd in
     "resizeimg")
         truncate -s +1G "$2"
         ;;
+    "chroot")
+        bash scripts/chroot_only.sh "$2" chroot
+        ;;
+    "cleanup")
+        bash scripts/chroot_only.sh "$2" cleanup
+        ;;
     "help"|"--help"|"")
         help
         ;;
